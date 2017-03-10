@@ -167,11 +167,8 @@ class CrawlResource(ServiceResource):
         return self.prepare_crawl(api_params, scrapy_request_args, **kwargs)
 
     def validate_options(self, scrapy_request_args, api_params):
-        url = scrapy_request_args.get("url")
+        url = scrapy_request_args.setdefault("url", settings.DEFAULT_URL)
         start_requests = api_params.get("start_requests")
-        if not url and not start_requests:
-            raise Error(400,
-                        "'url' is required if start_requests are disabled")
 
     def get_required_argument(self, api_params, name, error_msg=None):
         """Get required API key from dict-like object.
@@ -205,7 +202,7 @@ class CrawlResource(ServiceResource):
             should contain positional and keyword arguments for Scrapy
             Request object that will be created
         """
-        spider_name = self.get_required_argument(api_params, 'spider_name')
+        spider_name = api_params.get('spider_name', settings.DEFAULT_SPIDER_NAME)
         start_requests = api_params.get("start_requests", False)
         try:
             max_requests = api_params['max_requests']
@@ -230,9 +227,9 @@ class CrawlResource(ServiceResource):
         response = {
             "status": "ok",
             "items": items,
-            "items_dropped": result.get("items_dropped", []),
-            "stats": result.get("stats"),
-            "spider_name": result.get("spider_name"),
+            # "items_dropped": result.get("items_dropped", []),
+            # "stats": result.get("stats"),
+            # "spider_name": result.get("spider_name"),
         }
         errors = result.get("errors")
         if errors:

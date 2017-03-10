@@ -30,3 +30,7 @@ CRAWL_MANAGER = 'scrapyrt.core.CrawlManager'
 TIMEOUT_LIMIT = 1000
 # disable in production
 DEBUG = True
+
+DEFAULT_SPIDER_NAME = ''
+
+DEFAULT_URL = 'https://httpbin.org/html'
